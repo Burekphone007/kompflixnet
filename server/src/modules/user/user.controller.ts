@@ -7,7 +7,7 @@ export class UserController {
     constructor(private readonly userService: UserService) { }
 
     @Post("registration")
-    async addCat(
+    async addUser(
         @Body() createUserDto: CreateUserDto
     ) {
         const user = await this.userService.create(
