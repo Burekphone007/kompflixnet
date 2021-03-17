@@ -4,11 +4,14 @@ import { InjectModel } from '@nestjs/mongoose';
 import { User, UserDocument } from './schemas/user.schema';
 import { CreateUserDto } from './dto/createUserDto';
 import * as bcrypt from 'bcrypt';
+import { ConfigService } from '@nestjs/config';
 
 
 @Injectable()
 export class UserService {
-  constructor(@InjectModel(User.name) private userModel: Model<UserDocument>) {}
+  constructor(@InjectModel(User.name) private userModel: Model<UserDocument>,
+              private configService: ConfigService
+      ) {}
 
   async create(createUserDto: CreateUserDto): Promise<User> {
     const hashedPassword = await this.hashPassword(createUserDto.password);
@@ -21,7 +24,7 @@ export class UserService {
   }
 
   async hashPassword(password : string) {
-    const saltOrRounds: number = 10;
+    const saltOrRounds = parseInt(this.configService.get<string>('PASSWORDSALT'));
     return  await bcrypt.hash(password, saltOrRounds);
   }
 } 
