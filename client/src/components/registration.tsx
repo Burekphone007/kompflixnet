@@ -17,9 +17,9 @@ import { useState } from "react";
 import { MouseEvent } from "react";
 
 interface IUserReg {
-  name: string;
   username: string;
-  birthDate: Date;
+  name: string;
+  birthDate: string;
   password: string;
 }
 
@@ -55,12 +55,40 @@ const useStyles = makeStyles((theme) => ({
 
 const Registration = () => {
   const [gender, setGender] = useState("female");
-  const [formValues, setFormValues] = useState<IUserReg>();
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [birthDate, setBirthDate] = useState();
+  const [formValues, setFormValues] = useState<IUserReg>({
+    username: "",
+    name: "",
+    birthDate: "",
+    password: "",
+  });
+
   const radioButton = (e: React.FormEvent<HTMLInputElement>) => {
     e.preventDefault();
     const genderName: string = e.currentTarget.value;
     setGender(genderName);
-    console.log(gender);
+  };
+  const onName = (e: React.ChangeEvent<HTMLInputElement>) => {
+    e.preventDefault();
+    setFormValues({ ...formValues, name: e.currentTarget.value });
+  };
+  const onPassword = (e: React.ChangeEvent<HTMLInputElement>) => {
+    e.preventDefault();
+    setFormValues({ ...formValues, password: e.currentTarget.value });
+  };
+  const onConfirmPassword = (e: React.ChangeEvent<HTMLInputElement>) => {
+    e.preventDefault();
+    const confirmPw: string = e.currentTarget.value;
+    setConfirmPassword(e.currentTarget.value);
+  };
+  const onUsername = (e: React.ChangeEvent<HTMLInputElement>) => {
+    e.preventDefault();
+    setFormValues({ ...formValues, username: e.currentTarget.value });
+  };
+  const onDate = (e: React.ChangeEvent<HTMLInputElement>) => {
+    e.preventDefault();
+    setFormValues({ ...formValues, birthDate: e.currentTarget.value });
   };
 
   const { path } = useRouteMatch();
@@ -79,10 +107,11 @@ const Registration = () => {
             margin="normal"
             required
             fullWidth
-            id="email"
-            label="Email Address"
-            name="email"
-            autoComplete="email"
+            id="username"
+            label="username"
+            name="username"
+            autoComplete="username"
+            onChange={onUsername}
             autoFocus
           />
           <TextField
@@ -90,10 +119,11 @@ const Registration = () => {
             margin="normal"
             required
             fullWidth
-            id="username"
-            label="username"
-            name="username"
-            autoComplete="username"
+            id="name"
+            label="name"
+            name="name"
+            onChange={onName}
+            autoComplete="name"
             autoFocus
           />
           <TextField
@@ -108,6 +138,7 @@ const Registration = () => {
               shrink: true,
             }}
             autoFocus
+            onChange={onDate}
           />
           <RadioGroup
             aria-label="gender"
@@ -139,6 +170,7 @@ const Registration = () => {
             type="password"
             id="password"
             autoComplete="current-password"
+            onChange={onPassword}
           />
           <TextField
             variant="outlined"
@@ -150,14 +182,18 @@ const Registration = () => {
             type="password"
             id="confirmPassword"
             autoComplete="current-password"
+            onChange={onConfirmPassword}
           />
 
           <Button
-            type="submit"
+            type="button"
             fullWidth
             variant="contained"
             color="primary"
             className={classes.submit}
+            onClick={() => {
+              console.log(formValues);
+            }}
           >
             Registration
           </Button>
