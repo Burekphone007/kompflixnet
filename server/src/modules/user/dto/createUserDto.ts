@@ -1,6 +1,6 @@
 import { Type } from 'class-transformer';
-import { IsDate, IsInt, IsString } from 'class-validator'; 
- 
+import { IsDate, IsInt, IsString } from 'class-validator';
+
 export class CreateUserDto {
   @IsString()
   readonly name: string;

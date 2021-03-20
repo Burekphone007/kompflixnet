@@ -15,13 +15,7 @@ import Radio from "@material-ui/core/Radio";
 import RadioGroup from "@material-ui/core/RadioGroup";
 import { useState } from "react";
 import { MouseEvent } from "react";
-
-interface IUserReg {
-  username: string;
-  name: string;
-  birthDate: string;
-  password: string;
-}
+import { Post, IUserRegRequst } from "../api/http.util";
 
 function Copyright() {
   return (
@@ -57,10 +51,10 @@ const Registration = () => {
   const [gender, setGender] = useState("female");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [birthDate, setBirthDate] = useState();
-  const [formValues, setFormValues] = useState<IUserReg>({
+  const [formValues, setFormValues] = useState<IUserRegRequst>({
     username: "",
     name: "",
-    birthDate: "",
+    birthDate: new Date(),
     password: "",
   });
 
@@ -88,7 +82,8 @@ const Registration = () => {
   };
   const onDate = (e: React.ChangeEvent<HTMLInputElement>) => {
     e.preventDefault();
-    setFormValues({ ...formValues, birthDate: e.currentTarget.value });
+    const getBirthDate: Date = new Date(e.currentTarget.value);
+    setFormValues({ ...formValues, birthDate: getBirthDate });
   };
 
   const { path } = useRouteMatch();
@@ -193,6 +188,7 @@ const Registration = () => {
             className={classes.submit}
             onClick={() => {
               console.log(formValues);
+              Post(formValues);
             }}
           >
             Registration
