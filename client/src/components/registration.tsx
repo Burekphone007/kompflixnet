@@ -1,20 +1,15 @@
 import { useRouteMatch } from "react-router";
-import Avatar from "@material-ui/core/Avatar";
 import Button from "@material-ui/core/Button";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import TextField from "@material-ui/core/TextField";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
-import Checkbox from "@material-ui/core/Checkbox";
-import Link from "@material-ui/core/Link";
 import Box from "@material-ui/core/Box";
-import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
 import Radio from "@material-ui/core/Radio";
 import RadioGroup from "@material-ui/core/RadioGroup";
 import { useState } from "react";
-import { MouseEvent } from "react";
 import { Post, IUserRegRequst } from "../api/http.util";
 
 function Copyright() {
@@ -54,14 +49,14 @@ const Registration = () => {
   const [formValues, setFormValues] = useState<IUserRegRequst>({
     username: "",
     name: "",
-    birthDate: new Date(),
+    gender: "FEMALE",
+    birthDate: new Date("2002-05-24"),
     password: "",
   });
 
-  const radioButton = (e: React.FormEvent<HTMLInputElement>) => {
+  const onGender = (e: React.FormEvent<HTMLInputElement>) => {
     e.preventDefault();
-    const genderName: string = e.currentTarget.value;
-    setGender(genderName);
+    setFormValues({ ...formValues, gender: e.currentTarget.value });
   };
   const onName = (e: React.ChangeEvent<HTMLInputElement>) => {
     e.preventDefault();
@@ -138,19 +133,25 @@ const Registration = () => {
           <RadioGroup
             aria-label="gender"
             name="gender2"
-            value={gender}
-            onChange={radioButton}
+            value={formValues.gender}
+            onChange={onGender}
           >
             <FormControlLabel
-              value="female"
+              value="FEMALE"
               control={<Radio color="primary" />}
               label="Female"
               labelPlacement="start"
             />
             <FormControlLabel
-              value="male"
+              value="MALE"
               control={<Radio color="primary" />}
               label="Male"
+              labelPlacement="start"
+            />
+            <FormControlLabel
+              value="OTHERS"
+              control={<Radio color="primary" />}
+              label="Others"
               labelPlacement="start"
             />
           </RadioGroup>
@@ -187,7 +188,6 @@ const Registration = () => {
             color="primary"
             className={classes.submit}
             onClick={() => {
-              console.log(formValues);
               Post(formValues);
             }}
           >
@@ -203,11 +203,3 @@ const Registration = () => {
 };
 
 export default Registration;
-/**
-
-
-
-
-export default function SignIn() {
-  
-} */
