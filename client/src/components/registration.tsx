@@ -10,7 +10,8 @@ import Container from "@material-ui/core/Container";
 import Radio from "@material-ui/core/Radio";
 import RadioGroup from "@material-ui/core/RadioGroup";
 import { useState } from "react";
-import { Post, IUserRegRequst } from "../api/http.util";
+import { IUserRegRequst, IUserRegErrResponse } from "../api/interfaces";
+import { Post } from "../api/http.util";
 
 function Copyright() {
   return (
@@ -43,15 +44,22 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const Registration = () => {
-  const [gender, setGender] = useState("female");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [birthDate, setBirthDate] = useState();
   const [formValues, setFormValues] = useState<IUserRegRequst>({
     username: "",
     name: "",
     gender: "FEMALE",
     birthDate: new Date("2002-05-24"),
     password: "",
+    confirmPassword: "",
+  });
+
+  const [errorValues, setErrorValues] = useState<IUserRegErrResponse>({
+    username: { isInCorrect: false, errMessage: "" },
+    name: { isInCorrect: false, errMessage: "" },
+    password: { isInCorrect: false, errMessage: "" },
+    birthDate: { isInCorrect: false, errMessage: "" },
+    gender: { isInCorrect: false, errMessage: "" },
+    confirmPassword: { isInCorrect: false, errMessage: "" },
   });
 
   const onGender = (e: React.FormEvent<HTMLInputElement>) => {
@@ -60,24 +68,43 @@ const Registration = () => {
   };
   const onName = (e: React.ChangeEvent<HTMLInputElement>) => {
     e.preventDefault();
+    setErrorValues({
+      ...errorValues,
+      name: { isInCorrect: false, errMessage: "" },
+    });
     setFormValues({ ...formValues, name: e.currentTarget.value });
   };
   const onPassword = (e: React.ChangeEvent<HTMLInputElement>) => {
     e.preventDefault();
+    setErrorValues({
+      ...errorValues,
+      password: { isInCorrect: false, errMessage: "" },
+    });
     setFormValues({ ...formValues, password: e.currentTarget.value });
   };
   const onConfirmPassword = (e: React.ChangeEvent<HTMLInputElement>) => {
     e.preventDefault();
-    const confirmPw: string = e.currentTarget.value;
-    setConfirmPassword(e.currentTarget.value);
+    setErrorValues({
+      ...errorValues,
+      confirmPassword: { isInCorrect: false, errMessage: "" },
+    });
+    setFormValues({ ...formValues, confirmPassword: e.currentTarget.value });
   };
   const onUsername = (e: React.ChangeEvent<HTMLInputElement>) => {
     e.preventDefault();
+    setErrorValues({
+      ...errorValues,
+      username: { isInCorrect: false, errMessage: "" },
+    });
     setFormValues({ ...formValues, username: e.currentTarget.value });
   };
   const onDate = (e: React.ChangeEvent<HTMLInputElement>) => {
     e.preventDefault();
     const getBirthDate: Date = new Date(e.currentTarget.value);
+    setErrorValues({
+      ...errorValues,
+      birthDate: { isInCorrect: false, errMessage: "" },
+    });
     setFormValues({ ...formValues, birthDate: getBirthDate });
   };
 
@@ -103,6 +130,11 @@ const Registration = () => {
             autoComplete="username"
             onChange={onUsername}
             autoFocus
+            error={errorValues.username.isInCorrect && Boolean(true)}
+            helperText={
+              errorValues.username.isInCorrect &&
+              errorValues.username.errMessage
+            }
           />
           <TextField
             variant="outlined"
@@ -112,6 +144,10 @@ const Registration = () => {
             id="name"
             label="name"
             name="name"
+            error={errorValues.name.isInCorrect && Boolean(true)}
+            helperText={
+              errorValues.name.isInCorrect && errorValues.name.errMessage
+            }
             onChange={onName}
             autoComplete="name"
             autoFocus
@@ -123,6 +159,11 @@ const Registration = () => {
             type="date"
             required
             fullWidth
+            error={errorValues.birthDate.isInCorrect && Boolean(true)}
+            helperText={
+              errorValues.birthDate.isInCorrect &&
+              errorValues.birthDate.errMessage
+            }
             defaultValue="2002-05-24"
             InputLabelProps={{
               shrink: true,
@@ -165,6 +206,11 @@ const Registration = () => {
             label="Password"
             type="password"
             id="password"
+            error={errorValues.password.isInCorrect && Boolean(true)}
+            helperText={
+              errorValues.password.isInCorrect &&
+              errorValues.password.errMessage
+            }
             autoComplete="current-password"
             onChange={onPassword}
           />
@@ -179,6 +225,11 @@ const Registration = () => {
             id="confirmPassword"
             autoComplete="current-password"
             onChange={onConfirmPassword}
+            error={errorValues.confirmPassword.isInCorrect && Boolean(true)}
+            helperText={
+              errorValues.confirmPassword.isInCorrect &&
+              errorValues.confirmPassword.errMessage
+            }
           />
 
           <Button
@@ -187,8 +238,10 @@ const Registration = () => {
             variant="contained"
             color="primary"
             className={classes.submit}
-            onClick={() => {
-              Post(formValues);
+            onClick={async () => {
+              const res = await Post(formValues);
+              console.log(res);
+              setErrorValues({ ...errorValues, ...res });
             }}
           >
             Registration
