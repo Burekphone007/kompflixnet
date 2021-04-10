@@ -11,9 +11,10 @@ export class AuthService {
 
   async validateUser(username: string, pass: string): Promise<any> {
     const user = await this.userService.findOne(username);
-    if (this.userService.comparePasswords(user.password, pass)) {
+    if (await this.userService.comparePasswords(user.password, pass)) {
       return user;
     }
+
     return null;
   }
   async login(user: any) {
