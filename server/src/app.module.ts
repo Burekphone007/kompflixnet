@@ -7,7 +7,8 @@ import { UserModule } from './modules/user/user.module';
 import { AuthModule } from './modules/auth/auth.module';
 @Module({
   imports: [
-    MongooseModule.forRoot('mongodb://0.0.0.0:51981/nest'),
+    //  MongooseModule.forRoot(`mongodb://${process.env.MONGOHOST}/nest`),
+    MongooseModule.forRoot(`mongodb://0.0.0.0:51981/nest`),
     ConfigModule.forRoot({ envFilePath: '.development.env', isGlobal: true }),
     UserModule,
     AuthModule,

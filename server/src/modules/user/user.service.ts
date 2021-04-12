@@ -1,5 +1,5 @@
 import { Model } from 'mongoose';
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { User, UserDocument } from './schemas/user.schema';
 import { CreateUserDto } from './dto/createUserDto';
@@ -14,6 +14,10 @@ export class UserService {
   ) {}
 
   async create(createUserDto: CreateUserDto): Promise<User> {
+    const user: User = await this.findOne(createUserDto.username);
+    if (user) {
+      // if there is user with  this username
+    }
     const hashedPassword = await this.hashPassword(createUserDto.password);
     const createdUser = new this.userModel({
       ...createUserDto,
@@ -36,7 +40,7 @@ export class UserService {
     userPassword: string,
     inputPassword: string,
   ): Promise<boolean> {
-    return await bcrypt.compare(userPassword, inputPassword);
+    return await bcrypt.compare(inputPassword, userPassword);
   }
   async findOne(username: string): Promise<User> {
     return await this.userModel.findOne({ username: username }).exec();

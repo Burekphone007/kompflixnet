@@ -1,8 +1,9 @@
-import axios from "axios";
+import axios, { ResponseType } from "axios";
 import {
   ResponseExceptionErrorFormat,
   IUserRegErrResponse,
   IUserRegRequst,
+  ILoginReq,
 } from "./interfaces";
 
 export const setRegErrResponse = (
@@ -48,5 +49,20 @@ export const Post = async (
     return mapResponse(res);
   } else {
     return mapResponse(res);
+  }
+};
+
+export const loginPost = async (loginReq: ILoginReq): Promise<Boolean> => {
+  const res: Response = await axios
+    .post(`http://localhost:3000/auth/login`, loginReq)
+    .catch((error) => {
+      console.log(error.message);
+      return error.message;
+    });
+  if (res.status < 400) {
+    console.log("res true: ", res);
+    return true;
+  } else {
+    return false;
   }
 };

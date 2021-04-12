@@ -61,54 +61,21 @@ const Registration = () => {
     gender: { isInCorrect: false, errMessage: "" },
     confirmPassword: { isInCorrect: false, errMessage: "" },
   });
-
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setErrorValues({
+      ...errorValues,
+      [e.currentTarget.id]: { isInCorrect: false, errMessage: "" },
+    });
+    setFormValues({
+      ...formValues,
+      [e.currentTarget.id]: e.currentTarget.value,
+    });
+  };
   const onGender = (e: React.FormEvent<HTMLInputElement>) => {
     e.preventDefault();
     setFormValues({ ...formValues, gender: e.currentTarget.value });
   };
-  const onName = (e: React.ChangeEvent<HTMLInputElement>) => {
-    e.preventDefault();
-    setErrorValues({
-      ...errorValues,
-      name: { isInCorrect: false, errMessage: "" },
-    });
-    setFormValues({ ...formValues, name: e.currentTarget.value });
-  };
-  const onPassword = (e: React.ChangeEvent<HTMLInputElement>) => {
-    e.preventDefault();
-    setErrorValues({
-      ...errorValues,
-      password: { isInCorrect: false, errMessage: "" },
-    });
-    setFormValues({ ...formValues, password: e.currentTarget.value });
-  };
-  const onConfirmPassword = (e: React.ChangeEvent<HTMLInputElement>) => {
-    e.preventDefault();
-    setErrorValues({
-      ...errorValues,
-      confirmPassword: { isInCorrect: false, errMessage: "" },
-    });
-    setFormValues({ ...formValues, confirmPassword: e.currentTarget.value });
-  };
-  const onUsername = (e: React.ChangeEvent<HTMLInputElement>) => {
-    e.preventDefault();
-    setErrorValues({
-      ...errorValues,
-      username: { isInCorrect: false, errMessage: "" },
-    });
-    setFormValues({ ...formValues, username: e.currentTarget.value });
-  };
-  const onDate = (e: React.ChangeEvent<HTMLInputElement>) => {
-    e.preventDefault();
-    const getBirthDate: Date = new Date(e.currentTarget.value);
-    setErrorValues({
-      ...errorValues,
-      birthDate: { isInCorrect: false, errMessage: "" },
-    });
-    setFormValues({ ...formValues, birthDate: getBirthDate });
-  };
 
-  const { path } = useRouteMatch();
   const classes = useStyles();
 
   return (
@@ -128,7 +95,7 @@ const Registration = () => {
             label="username"
             name="username"
             autoComplete="username"
-            onChange={onUsername}
+            onChange={handleChange}
             autoFocus
             error={errorValues.username.isInCorrect && Boolean(true)}
             helperText={
@@ -148,7 +115,7 @@ const Registration = () => {
             helperText={
               errorValues.name.isInCorrect && errorValues.name.errMessage
             }
-            onChange={onName}
+            onChange={handleChange}
             autoComplete="name"
             autoFocus
           />
@@ -169,7 +136,7 @@ const Registration = () => {
               shrink: true,
             }}
             autoFocus
-            onChange={onDate}
+            onChange={handleChange}
           />
           <RadioGroup
             aria-label="gender"
@@ -212,7 +179,7 @@ const Registration = () => {
               errorValues.password.errMessage
             }
             autoComplete="current-password"
-            onChange={onPassword}
+            onChange={handleChange}
           />
           <TextField
             variant="outlined"
@@ -224,7 +191,7 @@ const Registration = () => {
             type="password"
             id="confirmPassword"
             autoComplete="current-password"
-            onChange={onConfirmPassword}
+            onChange={handleChange}
             error={errorValues.confirmPassword.isInCorrect && Boolean(true)}
             helperText={
               errorValues.confirmPassword.isInCorrect &&
