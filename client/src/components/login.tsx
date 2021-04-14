@@ -31,17 +31,29 @@ const useStyles = makeStyles((theme) => ({
 
 const Login = () => {
   const classes = useStyles();
-
   const [formValues, setFormValues] = useState<ILoginReq>({
     username: "",
     password: "",
   });
   const [isError, setIsError] = useState(false);
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormValues({
       ...formValues,
       [e.currentTarget.id]: e.currentTarget.value,
     });
+  };
+
+  const submitLogin = async (formValues: ILoginReq) => {
+    try {
+      const res = await loginPost(formValues);
+      if (res.status >= 200 && res.status < 400) {
+        setIsError(false);
+        window.localStorage.setItem("token", res.data.access_token);
+      }
+    } catch (error) {
+      setIsError(true);
+    }
   };
   return (
     <Container component="main" maxWidth="xs">
@@ -79,6 +91,7 @@ const Login = () => {
             id="password"
             label="password"
             name="password"
+            type="password"
             onChange={handleChange}
             autoComplete="name"
             autoFocus
@@ -89,9 +102,8 @@ const Login = () => {
             variant="contained"
             color="primary"
             className={classes.submit}
-            onClick={async () => {
-              const res: boolean = !!!(await loginPost(formValues));
-              setIsError(res);
+            onClick={() => {
+              submitLogin(formValues);
             }}
           >
             Registration

@@ -22,6 +22,15 @@ export interface IUserRegErrResponse {
   password: { isInCorrect: boolean; errMessage: string };
   confirmPassword: { isInCorrect: boolean; errMessage: string };
 }
+export interface IUserRegErrRes {
+  username: string;
+  name: string;
+  password: string;
+  birthDate: string;
+  gender: string;
+  confirmPassword: string;
+}
+
 //login
 export interface ILoginReq {
   username: string;
