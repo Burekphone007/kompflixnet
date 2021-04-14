@@ -1,21 +1,28 @@
 import { Model } from 'mongoose';
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { User, UserDocument } from './schemas/user.schema';
 import { CreateUserDto } from './dto/createUserDto';
 import * as bcrypt from 'bcrypt';
 import { ConfigService } from '@nestjs/config';
 
-
 @Injectable()
 export class UserService {
-  constructor(@InjectModel(User.name) private userModel: Model<UserDocument>,
-              private configService: ConfigService
-      ) {}
+  constructor(
+    @InjectModel(User.name) private userModel: Model<UserDocument>,
+    private configService: ConfigService,
+  ) {}
 
   async create(createUserDto: CreateUserDto): Promise<User> {
+    const user: User = await this.findOne(createUserDto.username);
+    if (user) {
+      // if there is user with  this username
+    }
     const hashedPassword = await this.hashPassword(createUserDto.password);
-    const createdUser =  new this.userModel({...createUserDto, password : hashedPassword });
+    const createdUser = new this.userModel({
+      ...createUserDto,
+      password: hashedPassword,
+    });
     return createdUser.save();
   }
 
@@ -23,8 +30,19 @@ export class UserService {
     return this.userModel.find().exec();
   }
 
-  async hashPassword(password : string) {
-    const saltOrRounds = parseInt(this.configService.get<string>('PASSWORDSALT'));
-    return  await bcrypt.hash(password, saltOrRounds);
+  async hashPassword(password: string) {
+    const saltOrRounds = parseInt(
+      this.configService.get<string>('PASSWORDSALT'),
+    );
+    return await bcrypt.hash(password, saltOrRounds);
   }
-} 
+  async comparePasswords(
+    userPassword: string,
+    inputPassword: string,
+  ): Promise<boolean> {
+    return await bcrypt.compare(inputPassword, userPassword);
+  }
+  async findOne(username: string): Promise<User> {
+    return await this.userModel.findOne({ username: username }).exec();
+  }
+}
