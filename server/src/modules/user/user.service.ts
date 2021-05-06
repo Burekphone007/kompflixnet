@@ -45,4 +45,7 @@ export class UserService {
   async findOne(username: string): Promise<User> {
     return await this.userModel.findOne({ username: username }).exec();
   }
+  async findOneById(userId: string): Promise<User> {
+    return await this.userModel.findOne({ _id: userId }).exec();
+  }
 }

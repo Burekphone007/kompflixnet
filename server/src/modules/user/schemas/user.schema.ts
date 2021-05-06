@@ -1,10 +1,13 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document } from 'mongoose';
+import { Document, Schema as MongooseSchema } from 'mongoose';
 import { GenderType } from '../../../common/constants/gende-type';
 export type UserDocument = User & Document;
 
 @Schema()
 export class User {
+  @Prop({ auto: true })
+  _id: MongooseSchema.Types.ObjectId;
+
   @Prop()
   name: string;
 

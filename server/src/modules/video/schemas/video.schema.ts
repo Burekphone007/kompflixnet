@@ -1,6 +1,7 @@
 import { Prop, SchemaFactory, Schema as NestSchema } from '@nestjs/mongoose';
 import { Document, Schema } from 'mongoose';
 import { Category } from '../../../modules/category/schemas/category.schema';
+import { v4 as uuidv4 } from 'uuid';
 export type VideoDocument = Video & Document;
 
 @NestSchema()
@@ -17,11 +18,17 @@ export class Video {
   @Prop()
   dislike: number;
 
-  @Prop()
+  @Prop({ type: Date, default: Date.now })
   uploadDate: Date;
 
-  @Prop()
+  @Prop({ default: uuidv4() })
   storageUID: string;
+
+  @Prop()
+  uploaderId: string;
+  // uploaderId: {
+  //   type: Schema.Types.ObjectId;
+  // };
 
   @Prop()
   categories: [
